@@ -1,0 +1,39 @@
+package com.company.employeeDirectory;
+
+
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Component
+public class EmployeeService {
+    private List<Employee> employees = new ArrayList<>();
+
+    public void addEmployee(Employee emp) {
+        employees.add(emp);
+    }
+
+    public List<Employee> getEmployeesByDepartment(String dept) {
+        return employees.stream()
+                .filter(e -> e.getDepartment().equalsIgnoreCase(dept))
+                .collect(Collectors.toList());
+    }
+
+    public Employee getTopPaidEmployee() {
+        return employees.stream()
+                .max(Comparator.comparingDouble(Employee::getSalary))
+                .orElse(null);
+    }
+
+    public List<Employee> getEmployeesSortedByName() {
+        List<Employee> sorted = new ArrayList<>(employees);
+        sorted.sort(Comparator.comparing(Employee::getName));
+        return sorted;
+    }
+
+    public Map<String, List<Employee>> getDepartmentMapping() {
+        return employees.stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+    }
+}
